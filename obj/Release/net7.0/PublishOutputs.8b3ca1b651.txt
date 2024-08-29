@@ -1,0 +1,7 @@
+/Users/rileydurbin/Projects/Earnhardtify/obj/Release/net7.0/PubTmp/Out/Earnhardtify
+/Users/rileydurbin/Projects/Earnhardtify/obj/Release/net7.0/PubTmp/Out/appsettings.Development.json
+/Users/rileydurbin/Projects/Earnhardtify/obj/Release/net7.0/PubTmp/Out/appsettings.json
+/Users/rileydurbin/Projects/Earnhardtify/obj/Release/net7.0/PubTmp/Out/Earnhardtify.dll
+/Users/rileydurbin/Projects/Earnhardtify/obj/Release/net7.0/PubTmp/Out/Earnhardtify.deps.json
+/Users/rileydurbin/Projects/Earnhardtify/obj/Release/net7.0/PubTmp/Out/Earnhardtify.runtimeconfig.json
+/Users/rileydurbin/Projects/Earnhardtify/obj/Release/net7.0/PubTmp/Out/Earnhardtify.pdb

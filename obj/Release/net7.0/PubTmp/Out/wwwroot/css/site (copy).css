@@ -1,0 +1,195 @@
+﻿body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #121212;
+    color: #FFFFFF;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align items to the top */
+    height: 100vh; /* Full height of the viewport */
+    overflow: auto; /* Enable scrolling */
+}
+
+.container {
+    background-color: #1DB954;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 1200px; /* Increase the max-width to make the container wider */
+    width: 100%;
+    margin: 20px; /* Add margin for spacing */
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.btn {
+    background-color: #FFFFFF !important;
+    border: none;
+    color: #1DB954 !important;
+    padding: 15px 30px;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .btn:hover {
+        background-color: #006400 !important; /* Darker green */
+        color: #FFFFFF !important;
+    }
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+#custom-time-range .form-group {
+    margin-bottom: 15px;
+}
+
+#quiz-options .form-group {
+    margin-bottom: 30px; /* Add more space between form groups */
+}
+
+#stats-visualizations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center; /* Center the items within the wider container */
+}
+
+.stats-item {
+    background-color: #2C2C2C;
+    padding: 20px;
+    border-radius: 10px;
+    flex: 1 1 30%; /* Adjust flex basis to fit more items in a row */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+    .stats-item h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .stats-item p {
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+#stats-screen {
+    padding: 20px;
+    text-align: center;
+}
+
+#go-back-stats {
+    background-color: #FFFFFF !important;
+    border: none;
+    color: #1DB954 !important;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    #go-back-stats:hover {
+        background-color: #006400 !important; /* Darker green */
+        color: #FFFFFF !important;
+    }
+
+.stats-container {
+    max-width: 1400px; /* Increase the max-width to make the stats container wider */
+    width: 100%;
+    margin: 20px auto; /* Center the container and add spacing */
+}
+
+.clock {
+    width: 300px;
+    height: 300px;
+    position: relative;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.clock-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    #stats-visualizations {
+        flex-direction: column; /* Stack items vertically on mobile */
+        gap: 10px; /* Reduce gap between items */
+    }
+
+    .stats-item {
+        flex: 1 1 100%; /* Make each item take full width */
+    }
+}
+
+.table-container {
+    overflow-x: auto;
+    max-width: 100%; /* Ensure it does not go beyond the container */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .table th, .table td {
+        white-space: normal; /* Allow text to wrap */
+        word-wrap: break-word; /* Break long words */
+        width: 150px; /* Set a fixed width for the columns */
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #1DB954;
+    }
+
+    .table th {
+        position: sticky;
+        top: 0;
+        background-color: #1DB954;
+        z-index: 2;
+    }
+
+#billboard-charts {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    #billboard-charts th,
+    #billboard-charts td {
+        border: 1px solid #ffffff; /* White border for table cells */
+        padding: 8px;
+        text-align: left;
+    }
+
+    #billboard-charts th {
+        background-color: #1DB954; /* Green background for table headers */
+        color: #ffffff;
+        font-weight: bold;
+    }
+
+    #billboard-charts td {
+        background-color: #2C2C2C; /* Dark background for table cells */
+        color: #ffffff;
+    }
