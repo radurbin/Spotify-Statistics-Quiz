@@ -15,16 +15,16 @@ The Spotify Statistics Quiz offers a personalized and interactive way for users 
 ## Screenshots
 
 ### Home Screen
-![Home Screen](Screenshot_2024-08-29_at_12.27.54_PM.png)
+![Home Screen](S1.png)
 
 ### Quiz Game
-![Quiz Game](Screenshot_2024-08-29_at_12.30.28_PM.png)
+![Quiz Game](S2.png)
 
 ### Listening Stats Overview
-![Listening Stats Overview](Screenshot_2024-08-29_at_12.31.00_PM.png)
+![Listening Stats Overview](S3.png)
 
 ### Detailed Listening Stats
-![Detailed Listening Stats](Screenshot_2024-08-29_at_12.31.11_PM.png)
+![Detailed Listening Stats](S4.png)
 
 ## Future Enhancements
 
