@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnhardtify</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="css/site.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div id="start-screen">
+            <h1>Earnhardtify</h1>
+            <p>Welcome to your personalized Spotify stats and quiz game!</p>
+            <button onclick="showQuizOptions()" class="btn btn-primary">Start the Quiz</button>
+            <br />
+            <br />
+            <button onclick="showStatsOptions()" class="btn btn-secondary">See My Stats</button>
+            <button onclick="showBillboardChartsOptions()" class="btn btn-secondary">Billboard Charts</button> <!-- New button -->
+        </div>
+
+        <div id="quiz-options" style="display: none;">
+            <h2>Select Quiz Options</h2>
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <select id="category" class="form-control">
+                    <option value="songs">Songs</option>
+                    <option value="artists">Artists</option>
+                    <option value="albums">Albums</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="timespan">Timespan:</label>
+                <select id="timespan" class="form-control">
+                    <option value="week">Last 7 Days</option>
+                    <option value="month">Last 30 Days</option>
+                    <option value="6months">Last 6 Months</option>
+                    <option value="year">Last Year</option>
+                    <option value="all-time">All Time</option>
+                    <option value="dear-april">Sleeping On Dear April</option>
+                    <option value="first-2-months">First 2 Months</option>
+                    <option value="year-1-ld">Year 1 of Long Distance</option>
+                    <option value="year-2-ld">Year 2 of Long Distance</option>
+                    <option value="year-3-ld">Year 3 of Long Distance</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="eras-tour">Month Before Eras Tour</option>
+                    <option value="custom">Custom Time Range</option>
+                </select>
+            </div>
+            <div id="custom-time-range" style="display: none;">
+                <div class="form-group">
+                    <label for="custom-start">Start Date and Time:</label>
+                    <input type="datetime-local" id="custom-start" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="custom-end">End Date and Time:</label>
+                    <input type="datetime-local" id="custom-end" class="form-control">
+                </div>
+            </div>
+            <button onclick="startGame()" class="btn btn-success">Start Game</button>
+            <button onclick="goBack()" class="btn btn-secondary">Back</button>
+        </div>
+
+        <div id="game-screen" style="display: none;">
+            <h2>Guess Your Top 10 <span id="quiz-category"></span> From <span id="quiz-time"></span></h2>
+            <ul id="quiz-list" class="list-group">
+                <!-- Quiz items will be dynamically added here -->
+            </ul>
+            <div id="lives">
+                <span>Lives: </span>
+                <span id="lives-count">5</span>
+            </div>
+            <input type="text" id="guess-input" class="form-control" placeholder="Enter your guess" />
+            <button onclick="submitGuess()" class="btn btn-primary">Submit</button>
+            <button onclick="giveUp()" class="btn btn-secondary mt-3">Give Up</button>
+        </div>
+
+        <div id="stats-options" style="display: none;">
+            <h2>Select Time Range</h2>
+            <div class="form-group">
+                <label for="stats-timespan">Timespan:</label>
+                <select id="stats-timespan" class="form-control">
+                    <option value="week">Last 7 Days</option>
+                    <option value="month">Last 30 Days</option>
+                    <option value="6months">Last 6 Months</option>
+                    <option value="year">Last Year</option>
+                    <option value="all-time">All Time</option>
+                    <option value="dear-april">Sleeping On Dear April</option>
+                    <option value="first-2-months">First 2 Months</option>
+                    <option value="year-1-ld">Year 1 of Long Distance</option>
+                    <option value="year-2-ld">Year 2 of Long Distance</option>
+                    <option value="year-3-ld">Year 3 of Long Distance</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="eras-tour">Month Before Eras Tour</option>
+                    <option value="custom">Custom Time Range</option>
+                </select>
+            </div>
+            <div id="custom-stats-time-range" style="display: none;">
+                <div class="form-group">
+                    <label for="stats-custom-start">Start Date and Time:</label>
+                    <input type="datetime-local" id="stats-custom-start" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="stats-custom-end">End Date and Time:</label>
+                    <input type="datetime-local" id="stats-custom-end" class="form-control">
+                </div>
+            </div>
+            <button onclick="showStats()" class="btn btn-success">Show Stats</button>
+            <button onclick="goBack()" class="btn btn-secondary">Back</button>
+        </div>
+
+        <div id="stats-screen" style="display: none;">
+            <h2>Your Stats from <span id="stats-time-range"></span></h2>
+            <button id="go-back-stats" class="btn btn-secondary">Go Back</button>
+            <br />
+            <div id="stats-visualizations" class="row">
+                <!-- Visualization placeholders -->
+                <div id="num-streams" class="col-md-6 stats-item">
+                    <h3>Number of Streams</h3>
+                    <p id="num-streams-value">Placeholder</p>
+                </div>
+                <div id="num-minutes-streamed" class="col-md-6 stats-item">
+                    <h3>Number of Minutes Streamed</h3>
+                    <p id="num-minutes-streamed-value">Placeholder</p>
+                </div>
+                <div id="num-hours-streamed" class="col-md-6 stats-item">
+                    <h3>Number of Hours Streamed</h3>
+                    <p id="num-hours-streamed-value">Placeholder</p>
+                </div>
+                <div id="diff-tracks" class="col-md-6 stats-item">
+                    <h3>Different Tracks</h3>
+                    <p id="diff-tracks-value">Placeholder</p>
+                </div>
+                <div id="diff-artists" class="col-md-6 stats-item">
+                    <h3>Different Artists</h3>
+                    <p id="diff-artists-value">Placeholder</p>
+                </div>
+                <div id="diff-albums" class="col-md-6 stats-item">
+                    <h3>Different Albums</h3>
+                    <p id="diff-albums-value">Placeholder</p>
+                </div>
+                <div id="top-tracks" class="col-md-6 stats-item">
+                    <h3>Top Tracks</h3>
+                    <p id="top-tracks-value">Placeholder</p>
+                </div>
+                <div id="top-artists" class="col-md-6 stats-item">
+                    <h3>Top Artists</h3>
+                    <p id="top-artists-value">Placeholder</p>
+                </div>
+                <div id="top-albums" class="col-md-6 stats-item">
+                    <h3>Top Albums</h3>
+                    <p id="top-albums-value">Placeholder</p>
+                </div>
+                <div id="top-new-track" class="col-md-6 stats-item">
+                    <h3>Top New Tracks</h3>
+                    <p id="top-new-track-value">Placeholder</p>
+                </div>
+                <div id="top-new-artist" class="col-md-6 stats-item">
+                    <h3>Top New Artists</h3>
+                    <p id="top-new-artist-value">Placeholder</p>
+                </div>
+                <div id="top-new-album" class="col-md-6 stats-item">
+                    <h3>Top New Albums</h3>
+                    <p id="top-new-album-value">Placeholder</p>
+                </div>
+                <div id="percent-new-tracks" class="col-md-6 stats-item">
+                    <h3>Percent New Tracks</h3>
+                    <p id="percent-new-tracks-value">Placeholder</p>
+                </div>
+                <div id="percent-new-artists" class="col-md-6 stats-item">
+                    <h3>Percent New Artists</h3>
+                    <p id="percent-new-artists-value">Placeholder</p>
+                </div>
+                <div id="percent-new-albums" class="col-md-6 stats-item">
+                    <h3>Percent New Albums</h3>
+                    <p id="percent-new-albums-value">Placeholder</p>
+                </div>
+                <div id="avg-streams-per-song" class="col-md-6 stats-item">
+                    <h3>Average Streams Per Song</h3>
+                    <p id="avg-streams-per-song-value">Placeholder</p>
+                </div>
+                <div id="avg-streams-per-artist" class="col-md-6 stats-item">
+                    <h3>Average Streams Per Artist</h3>
+                    <p id="avg-streams-per-artist-value">Placeholder</p>
+                </div>
+                <div id="avg-streams-per-album" class="col-md-6 stats-item">
+                    <h3>Average Streams Per Album</h3>
+                    <p id="avg-streams-per-album-value">Placeholder</p>
+                </div>
+                <div id="listening-clock" class="col-md-6 stats-item clock-container">
+                    <h3>Listening Clock</h3>
+                    <div id="clock"></div>
+                </div>
+                <div id="avg-streams-per-day" class="col-md-6 stats-item">
+                    <h3>Average Streams Per Day</h3>
+                    <p id="avg-streams-per-day-value">Placeholder</p>
+                </div>
+                <div id="streams-most-active-day" class="col-md-6 stats-item">
+                    <h3>Streams in Most Active Day</h3>
+                    <p id="streams-most-active-day-value">Placeholder</p>
+                </div>
+                <div id="longest-streak" class="col-md-6 stats-item">
+                    <h3>Longest Streak</h3>
+                    <p id="longest-streak-value">Placeholder</p>
+                </div>
+                <!-- Add other stat visualizations as needed -->
+            </div>
+        </div>
+        <div id="billboard-charts-options" style="display: none;">
+            <h2>View Your Billboard Top 100 by Months or Years?</h2>
+            <div class="form-group">
+                <label for="chart-timespan">Timespan:</label>
+                <select id="chart-timespan" class="form-control">
+                    <option value="months">Months</option>
+                    <option value="years">Years</option>
+                </select>
+            </div>
+            <button onclick="showBillboardCharts()" class="btn btn-success">Show Charts</button>
+            <button onclick="goBack()" class="btn btn-secondary">Back</button>
+        </div>
+
+        <div id="billboard-charts-screen" style="display: none;">
+            <h2>Your Billboard Top 100</h2>
+            <button onclick="showBillboardChartsOptions()" class="btn btn-secondary">Back</button>
+            <br />
+            <div class="table-container">
+                <table id="billboard-charts" class="table table-striped table-dark">
+                    <!-- Table content will be generated dynamically -->
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="js/site.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>
