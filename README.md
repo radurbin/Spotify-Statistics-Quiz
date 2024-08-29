@@ -17,9 +17,6 @@ The Spotify Statistics Quiz offers a personalized and interactive way for users 
 ### Home Screen
 ![Home Screen](Screenshot_2024-08-29_at_12.27.54_PM.png)
 
-### Quiz Options
-![Quiz Options](Screenshot_2024-08-29_at_12.28.13_PM.png)
-
 ### Quiz Game
 ![Quiz Game](Screenshot_2024-08-29_at_12.30.28_PM.png)
 
