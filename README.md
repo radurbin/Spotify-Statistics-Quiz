@@ -1,6 +1,6 @@
 # Spotify Statistics Quiz
 
-This project is a web application that I built as an anniversary gift. It uses users’ Spotify data to quiz them on their top songs, artists, and albums, while also providing detailed listening statistics. Users can select custom time ranges or choose from predefined options to tailor their experience.
+This project is a web application that I built as an anniversary gift. It uses users’ Spotify data to quiz them on their top songs, artists, and albums, while also providing detailed listening statistics. Users can select custom time ranges or choose from predefined options to tailor their experience. This page is hosted with GitHub Pages at https://radurbin.github.io/Spotify-Statistics-Quiz/wwwroot/index.html.
 
 ## Overview
 
