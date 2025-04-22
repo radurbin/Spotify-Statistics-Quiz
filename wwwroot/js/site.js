@@ -1868,9 +1868,9 @@ function firstQuestion() {
     removeSongFromData(song2);
 
     // Display the songs
-    document.getElementById('song-1-name').innerText = song1.name;
+    document.getElementById('song-1-name').innerText = song1.trackId;
     document.getElementById('song-1-streams').innerText = `Streams: ${song1.streams.toLocaleString()}`;
-    document.getElementById('song-2-name').innerText = song2.name;
+    document.getElementById('song-2-name').innerText = song2.trackId;
     document.getElementById('song-2-streams').innerText = `Streams: ${song2.streams.toLocaleString()}`;
 
     // Set up the options
@@ -1888,9 +1888,9 @@ function nextQuestion() {
     removeSongFromData(song2);
 
     // Display the songs
-    document.getElementById('song-1-name').innerText = song1.name;
+    document.getElementById('song-1-name').innerText = song1.trackId;
     document.getElementById('song-1-streams').innerText = `Streams: ${song1.streams.toLocaleString()}`;
-    document.getElementById('song-2-name').innerText = song2.name;
+    document.getElementById('song-2-name').innerText = song2.trackId;
     document.getElementById('song-2-streams').innerText = `Streams: ${song2.streams.toLocaleString()}`;
 
     // Set up the options
