@@ -28,6 +28,9 @@ function showQuizOptions() {
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('stats-options').style.display = 'none';
     document.getElementById('stats-screen').style.display = 'none';
+    document.getElementById('higher-or-lower-options').style.display = 'none';
+    document.getElementById('higher-or-lower-game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
 }
 
 document.getElementById('timespan').addEventListener('change', function () {
@@ -109,6 +112,9 @@ async function startGame() {
     document.getElementById('stats-options').style.display = 'none';
     document.getElementById('stats-screen').style.display = 'none';
     document.getElementById('game-screen').style.display = 'block';
+    document.getElementById('higher-or-lower-options').style.display = 'none';
+    document.getElementById('higher-or-lower-game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
     lives = maxLives; // Reset lives at the start of the game
     document.getElementById('lives-count').innerText = lives;
 
@@ -776,6 +782,9 @@ function resetGame() {
     document.getElementById('stats-screen').style.display = 'none';
     document.getElementById('stats-options').style.display = 'none';
     document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('higher-or-lower-options').style.display = 'none';
+    document.getElementById('higher-or-lower-game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
 
     // Remove the "Play a New Quiz" button if it exists
     const playAgainButton = document.querySelector('#game-screen .btn-primary');
@@ -832,6 +841,9 @@ function goBack() {
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('stats-options').style.display = 'none';
     document.getElementById('stats-screen').style.display = 'none';
+    document.getElementById('higher-or-lower-options').style.display = 'none';
+    document.getElementById('higher-or-lower-game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
     window.scrollTo({ top: 0});
 }
 
@@ -843,6 +855,9 @@ function showStatsOptions() {
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('stats-options').style.display = 'block';
     document.getElementById('stats-screen').style.display = 'none';
+    document.getElementById('higher-or-lower-options').style.display = 'none';
+    document.getElementById('higher-or-lower-game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
 }
 
 document.getElementById('stats-timespan').addEventListener('change', function () {
@@ -1510,6 +1525,9 @@ async function showBillboardChartsOptions() {
     document.getElementById('game-screen').style.display = 'none';
     document.getElementById('stats-options').style.display = 'none';
     document.getElementById('stats-screen').style.display = 'none';
+    document.getElementById('higher-or-lower-options').style.display = 'none';
+    document.getElementById('higher-or-lower-game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
     window.scrollTo({ top: 0});
 }
 
@@ -1686,3 +1704,289 @@ function getYearsPeriods() {
 
     return periods;
 }
+
+function showHigherOrLowerOptions() {
+    if (currentAudio) {
+        currentAudio.pause();
+    }
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('quiz-options').style.display = 'none';
+    document.getElementById('game-screen').style.display = 'none';
+    document.getElementById('stats-options').style.display = 'none';
+    document.getElementById('stats-screen').style.display = 'none';
+    document.getElementById('higher-or-lower-options').style.display = 'block';
+    document.getElementById('higher-or-lower-game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'none';
+}
+
+let currentScore = 0;
+let currentQuestion = 0;
+let songsData = [];
+let gameInProgress = false;
+let songSelected;
+
+const mockData = [
+    { trackId: 1, trackName: "Song A", artistName: "Artist 1", streams: 5000000 },
+    { trackId: 2, trackName: "Song B", artistName: "Artist 2", streams: 4500000 },
+    { trackId: 3, trackName: "Song C", artistName: "Artist 3", streams: 6000000 },
+    { trackId: 4, trackName: "Song D", artistName: "Artist 4", streams: 4200000 },
+    { trackId: 5, trackName: "Song E", artistName: "Artist 5", streams: 5500000 },
+    { trackId: 6, trackName: "Song F", artistName: "Artist 6", streams: 7000000 },
+    { trackId: 7, trackName: "Song G", artistName: "Artist 7", streams: 4800000 },
+    { trackId: 8, trackName: "Song H", artistName: "Artist 8", streams: 4900000 },
+    { trackId: 9, trackName: "Song I", artistName: "Artist 9", streams: 7500000 },
+    { trackId: 10, trackName: "Song J", artistName: "Artist 10", streams: 5300000 },
+    // Add more songs as needed
+];
+
+// Start the game
+async function startHigherOrLower() {
+    gameInProgress = true;
+    
+    const timespan = document.getElementById('higher-or-lower-timespan').value;
+    let endTime = timespan === 'custom' ? new Date(document.getElementById('higher-or-lower-custom-end').value).getTime() : Date.now();
+    let startTime;
+
+
+    if (timespan === 'week') {
+        startTime = endTime - (7 * 24 * 60 * 60 * 1000);
+        document.getElementById('higher-or-lower-time-range').innerText = "The Last 7 Days";
+    } else if (timespan === 'month') {
+        startTime = endTime - (30 * 24 * 60 * 60 * 1000);
+        document.getElementById('higher-or-lower-time-range').innerText = "The Last 30 Days";
+    } else if (timespan === '6months') {
+        startTime = endTime - (180 * 24 * 60 * 60 * 1000); // Last 6 months
+        document.getElementById('higher-or-lower-time-range').innerText = "The Last 6 Months";
+    } else if (timespan === 'year') {
+        startTime = endTime - (365 * 24 * 60 * 60 * 1000);
+        document.getElementById('higher-or-lower-time-range').innerText = "The Last Year";
+    } else if (timespan === 'custom') {
+        startTime = new Date(document.getElementById('stats-custom-start').value).getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = formatDateTime(startTime) + " to " + formatDateTime(endTime);
+    } else if (timespan === 'dear-april') {
+        startTime = new Date('2021-01-15T00:00:00').getTime();
+        endTime = new Date('2021-06-06T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "The Talking Stage";
+    } else if (timespan === 'first-2-months') {
+        startTime = new Date('2021-06-07T00:00:00').getTime();
+        endTime = new Date('2021-08-09T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "Our First 2 Months Dating";
+    } else if (timespan === 'year-1-ld') {
+        startTime = new Date('2021-09-05T00:00:00').getTime();
+        endTime = new Date('2022-05-23T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "Year 1 of Long Distance";
+    } else if (timespan === 'year-2-ld') {
+        startTime = new Date('2022-08-13T00:00:00').getTime();
+        endTime = new Date('2023-05-09T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "Year 2 of Long Distance";
+    } else if (timespan === 'year-3-ld') {
+        startTime = new Date('2023-08-14T00:00:00').getTime();
+        endTime = new Date('2024-05-06T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "Year 3 of Long Distance";
+    } else if (timespan === 'year-4-ld') {
+        startTime = new Date('2024-08-19T00:00:00').getTime();
+        endTime = new Date('2025-05-06T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "Year 4 of Long Distance";
+    } else if (timespan === '2017') {
+        startTime = new Date('2017-01-01T00:00:00').getTime();
+        endTime = new Date('2017-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2017";
+    } else if (timespan === '2018') {
+        startTime = new Date('2018-01-01T00:00:00').getTime();
+        endTime = new Date('2018-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2018";
+    } else if (timespan === '2019') {
+        startTime = new Date('2019-01-01T00:00:00').getTime();
+        endTime = new Date('2019-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2019";
+    } else if (timespan === '2020') {
+        startTime = new Date('2020-01-01T00:00:00').getTime();
+        endTime = new Date('2020-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2020";
+    } else if (timespan === '2021') {
+        startTime = new Date('2021-01-01T00:00:00').getTime();
+        endTime = new Date('2021-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2021";
+    } else if (timespan === '2022') {
+        startTime = new Date('2022-01-01T00:00:00').getTime();
+        endTime = new Date('2022-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2022";
+    } else if (timespan === '2023') {
+        startTime = new Date('2023-01-01T00:00:00').getTime();
+        endTime = new Date('2023-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2023";
+    } else if (timespan === '2024') {
+        startTime = new Date('2024-01-01T00:00:00').getTime();
+        endTime = new Date('2024-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2024";
+    } else if (timespan === '2025') {
+        startTime = new Date('2025-01-01T00:00:00').getTime();
+        endTime = new Date('2025-12-31T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "2025";
+    } else if (timespan === 'eras-tour') {
+        startTime = new Date('2023-03-30T12:00:00').getTime();
+        endTime = new Date('2023-04-30T23:59:59').getTime();
+        document.getElementById('higher-or-lower-time-range').innerText = "The Month Before The Eras Tour";
+    } else {
+        startTime = new Date('2017-05-02').getTime(); // Start from May 2, 2017 for "All Time"
+        document.getElementById('higher-or-lower-time-range').innerText = "Your All Time Spotify History";
+    }
+
+    const topSongs = await calculateStatsForHigherLower(startTime, endTime);
+    currentScore = 0;
+    currentQuestion = 0;
+
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('higher-or-lower-options').style.display = 'none';
+    document.getElementById('higher-or-lower-game-screen').style.display = 'block';
+    document.getElementById('score').innerText = `Score: ${currentScore}`;
+
+    // Fetch data from API or local storage
+    songsData = mockData.map(song => ({
+        trackId: song.trackId,
+        name: song.trackName,
+        artist: song.artistName,
+        streams: song.streams
+    }));
+
+    firstQuestion();
+}
+
+function removeSongFromData(song) {
+    songsData = songsData.filter(item => item.trackId !== song.trackId);
+}
+
+function firstQuestion() {
+    document.getElementById('option-1').style.pointerEvents = 'auto';
+    document.getElementById('option-2').style.pointerEvents = 'auto';
+    const song1 = getRandomSong();
+    removeSongFromData(song1);
+    const song2 = getRandomSong();
+    removeSongFromData(song2);
+
+    // Display the songs
+    document.getElementById('song-1-name').innerText = song1.name;
+    document.getElementById('song-1-streams').innerText = `Streams: ${song1.streams.toLocaleString()}`;
+    document.getElementById('song-2-name').innerText = song2.name;
+    document.getElementById('song-2-streams').innerText = `Streams: ${song2.streams.toLocaleString()}`;
+
+    // Set up the options
+    document.getElementById('option-1').onclick = () => checkAnswer(song1, song2);
+    document.getElementById('option-2').onclick = () => checkAnswer(song2, song1);
+
+    // document.getElementById('next-question').style.display = 'none';
+    document.getElementById('result').style.display = 'none';
+}
+
+// Proceed to the next question
+function nextQuestion() {
+    const song1 = songSelected;
+    const song2 = getRandomSong();
+    removeSongFromData(song2);
+
+    // Display the songs
+    document.getElementById('song-1-name').innerText = song1.name;
+    document.getElementById('song-1-streams').innerText = `Streams: ${song1.streams.toLocaleString()}`;
+    document.getElementById('song-2-name').innerText = song2.name;
+    document.getElementById('song-2-streams').innerText = `Streams: ${song2.streams.toLocaleString()}`;
+
+    // Set up the options
+    document.getElementById('option-1').onclick = () => checkAnswer(song1, song2);
+    document.getElementById('option-2').onclick = () => checkAnswer(song2, song1);
+
+    // document.getElementById('next-question').style.display = 'none';
+    document.getElementById('result').style.display = 'none';
+}
+
+// Check the player's answer
+function checkAnswer(selectedSong, otherSong) {
+
+    document.getElementById('option-1').style.pointerEvents = 'none';
+    document.getElementById('option-2').style.pointerEvents = 'none';
+
+    const isCorrect = selectedSong.streams >= otherSong.streams;
+
+    if (isCorrect) {
+        currentScore++;
+        document.getElementById('result').innerText = 'Correct!';
+        // first question, songSelected is set to the one selected - great!
+        // next question, if songSelected is the same, set it to the other one
+        if (songSelected == selectedSong) {
+            songSelected = otherSong;
+        }
+        else {
+            songSelected = selectedSong;
+        }
+        setTimeout(() => {
+            nextQuestion();
+            document.getElementById('option-1').style.pointerEvents = 'auto';
+            document.getElementById('option-2').style.pointerEvents = 'auto';
+        }, 1000);
+    } else {
+        document.getElementById('result').innerText = 'Incorrect!';
+        endGame();
+    }
+
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('score').innerText = `Score: ${currentScore}`;
+    currentQuestion++;
+
+    // document.getElementById('next-question').style.display = 'block';
+}
+
+// End the game
+function endGame() {
+    gameInProgress = false;
+    document.getElementById('higher-or-lower-game-screen').style.display = 'none';
+    document.getElementById('game-over-screen').style.display = 'block';
+    document.getElementById('final-score').innerText = currentScore;
+}
+
+// Restart the game
+function restartGame() {
+    document.getElementById('game-over-screen').style.display = 'none';
+    startHigherOrLower();
+}
+
+// Get a random song from the data
+function getRandomSong() {
+    if (songsData.length == 0) {
+        endGame();
+    }
+    const randomIndex = Math.floor(Math.random() * songsData.length);
+    return songsData[randomIndex];
+}
+
+async function calculateStatsForHigherLower(startTime, endTime) {
+    showLoadingScreen();
+    const unfilteredSongs = await fetchDataForStats(startTime, endTime);
+    const data = unfilteredSongs.filter(song => {
+        const songEndTime = new Date(song.endTime).getTime();
+        return songEndTime >= startTime && songEndTime <= endTime;
+    });
+
+    const topSongs = Object.entries(topSongsCounts)
+        .map(([id, info]) => ({ id, ...info }))
+        .sort((a, b) => b.count - a.count);
+
+    console.log(topSongs);
+
+    // Fetch artist names for top 10 songs
+    // const top10SongsWithArtists = await Promise.all(top10Songs.map(async song => {
+    //     const trackData = await fetchTrackData(song.id);
+    //     return {
+    //         ...song,
+    //         artist: trackData.artistName,
+    //         albumImage: trackData.albumImage,
+    //         preview: trackData.preview
+    //     };
+    // }));
+    hideLoadingScreen();
+    return topSongs;
+}
+
+// add all time real song data
+// integrate time period selector
+// add artists and albums
+// add which one did you listen to first? instead of just streams
+// add pictures and music

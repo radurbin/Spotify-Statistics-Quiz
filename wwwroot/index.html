@@ -13,6 +13,7 @@
             <h1>Earnhardtify</h1>
             <p>Welcome to your personalized Spotify stats and quiz game!</p>
             <button onclick="showQuizOptions()" class="btn btn-primary">Start the Quiz</button>
+            <button onclick="showHigherOrLowerOptions()" class="btn btn-primary">Play Higher or Lower</button>
             <br />
             <br />
             <button onclick="showStatsOptions()" class="btn btn-secondary">See My Stats</button>
@@ -251,6 +252,82 @@
             </div>
             <br />
             <button onclick="showBillboardChartsOptions()" class="btn btn-secondary">Back</button>
+        </div>
+
+        <div id="higher-or-lower-game-screen" style="display: none;">
+            <h1>Higher or Lower</h1>
+            <p id="question">Which song has more streams from <span id="higher-or-lower-time-range"></span>?</p>
+            <div id="song-options">
+                <div class="btn btn-primary" id="option-1">
+                    <h2 id="song-1-name"></h2>
+                    <p id="song-1-streams"></p>
+                </div>
+                <div class="btn btn-primary" id="option-2">
+                    <h2 id="song-2-name"></h2>
+                    <p id="song-2-streams"></p>
+                </div>
+            </div>
+            <p id="score">Score: 0</p>
+            <p id="result" style="display: none;"></p>
+        </div>
+
+        <div id="game-over-screen" style="display: none;">
+            <h1>Game Over</h1>
+            <p>Your final score: <span id="final-score"></span></p>
+            <button id="restart-game" class="btn btn-primary" onclick="restartGame()">Restart</button>
+            <button onclick="goBack()" class="btn btn-secondary">Home</button>
+        </div>
+
+        <div id="higher-or-lower-options" style="display: none;">
+            <h2>Select Higher or Lower Options</h2>
+            <div class="form-group">
+                <label for="higher-or-lower-category">Category:</label>
+                <select id="higher-or-lower-category" class="form-control">
+                    <option value="songs">Songs</option>
+                    <option value="artists">Artists</option>
+                    <option value="albums">Albums</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="higher-or-lower-timespan">Timespan:</label>
+                <select id="higher-or-lower-timespan" class="form-control">
+                    <option value="week">Last 7 Days</option>
+                    <option value="month">Last 30 Days</option>
+                    <option value="6months">Last 6 Months</option>
+                    <option value="year">Last Year</option>
+                    <option value="all-time">All Time</option>
+                    <option value="dear-april">Sleeping On Dear April</option>
+                    <option value="first-2-months">First 2 Months</option>
+                    <option value="year-1-ld">Year 1 of Long Distance</option>
+                    <option value="year-2-ld">Year 2 of Long Distance</option>
+                    <option value="year-3-ld">Year 3 of Long Distance</option>
+                    <option value="year-4-ld">Year 4 of Long Distance</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="eras-tour">Month Before Eras Tour</option>
+                    <option value="custom">Custom Time Range</option>
+                </select>
+            </div>
+            <div id="higher-or-lower-custom-time-range" style="display: none;">
+                <div class="form-group">
+                    <label for="higher-or-lower-custom-start">Start Date and Time:</label>
+                    <input type="datetime-local" id="higher-or-lower-custom-start" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="higher-or-lower-custom-end">End Date and Time:</label>
+                    <input type="datetime-local" id="higher-or-lower-custom-end" class="form-control">
+                </div>
+            </div>
+            <button onclick="startHigherOrLower()" class="btn btn-success">Start Game</button>
+            <button onclick="goBack()" class="btn btn-secondary">Back</button>
         </div>
 
     </div>
