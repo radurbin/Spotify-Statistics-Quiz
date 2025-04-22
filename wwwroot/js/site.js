@@ -130,6 +130,37 @@ async function startGame() {
     addGiveUpButton(); // Add the "Give Up" button when the game starts
 }
 
+async function safeFetch(url) {
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Direct fetch error: ${response.statusText}`);
+        }
+
+        return response;
+
+    } catch (error) {
+        console.warn(`Direct fetch failed: ${error.message}. Trying AllOrigins...`);
+
+        try {
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+            const proxyResponse = await fetch(proxyUrl);
+
+            if (!proxyResponse.ok) {
+                throw new Error(`AllOrigins fetch error: ${proxyResponse.statusText}`);
+            }
+
+            return proxyResponse;
+
+        } catch (proxyError) {
+            console.error(`AllOrigins fallback failed: ${proxyError.message}`);
+            throw proxyError;
+        }
+    }
+}
+
+
 async function fetchLocalData(startTime, endTime) {
     const years = [];
     for (let year = new Date(startTime).getFullYear(); year <= new Date(endTime).getFullYear(); year++) {
@@ -139,7 +170,7 @@ async function fetchLocalData(startTime, endTime) {
     let allData = [];
     for (const year of years) {
         try {
-            const response = await fetch(`spotify_data_${year}.json`);
+            const response = await safeFetch(`spotify_data_${year}.json`);
             if (!response.ok) {
                 throw new Error(`Error: ${response.statusText}`);
             }
@@ -163,7 +194,7 @@ async function fetchAPIAndLocalData(startTime, endTime) {
         const url = `https://api.stats.fm/api/v1/users/${userId}/streams?limit=${limit}&before=${before}`;
 
         try {
-            const response = await fetch(url, {
+            const response = await safeFetch(url, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -330,7 +361,7 @@ async function fetchArtistData(artistId) {
         return artistNameLookup[artistId];
     }
 
-    const response = await fetch(`https://api.stats.fm/api/v1/artists/${artistId}`);
+    const response = await safeFetch(`https://api.stats.fm/api/v1/artists/${artistId}`);
     if (response.status === 503) {
         alert('Server returned a 503 error. Refresh, wait a minute, and try again lol.');
         return null;
@@ -350,7 +381,7 @@ async function fetchTrackData(trackId) {
         return trackArtistNameLookup[trackId];
     }
 
-    const response = await fetch(`https://api.stats.fm/api/v1/tracks/${trackId}`);
+    const response = await safeFetch(`https://api.stats.fm/api/v1/tracks/${trackId}`);
     if (response.status === 503) {
         alert('Server returned a 503 error. Refresh, wait a minute, and try again lol.');
         return null;
@@ -375,7 +406,7 @@ async function fetchAlbumData(albumId) {
         return albumDataLookup[albumId];
     }
 
-    const response = await fetch(`https://api.stats.fm/api/v1/albums/${albumId}`);
+    const response = await safeFetch(`https://api.stats.fm/api/v1/albums/${albumId}`);
     if (response.status === 503) {
         alert('Server returned a 503 error. Refresh, wait a minute, and try again lol.');
         return null;
