@@ -1729,6 +1729,7 @@ let albumsData = [];
 let artistsData = [];
 let songSelected;
 let higherOrLowerCategory;
+let higherOrLowerType;
 
 document.getElementById('song-1-preview').addEventListener('click', function (event) {
     event.stopPropagation();
@@ -1743,6 +1744,7 @@ document.getElementById('song-2-preview').addEventListener('click', function (ev
 async function startHigherOrLower() {
     
     higherOrLowerCategory = document.getElementById('higher-or-lower-category').value;
+    higherOrLowerType = document.getElementById('higher-or-lower-type').value;
     const timespan = document.getElementById('higher-or-lower-timespan').value;
     let endTime = timespan === 'custom' ? new Date(document.getElementById('higher-or-lower-custom-end').value).getTime() : Date.now();
     let startTime;
@@ -1943,7 +1945,13 @@ async function firstQuestion() {
         document.getElementById('song-1-preview').style = "display:none;";
     }
     document.getElementById('song-1-streams').style = "display:none;";
-    document.getElementById('song-1-streams').innerText = `${song1.streams.toLocaleString()} Streams`;
+    if (higherOrLowerType === 'streams') {
+        document.getElementById('song-1-streams').innerText = `${song1.streams.toLocaleString()} Streams`;
+    }
+    else {
+        const song1Date = new Date(song1.streams);
+        document.getElementById('song-1-streams').innerText = `${song1Date.toLocaleDateString()} at ${song1Date.toLocaleTimeString()}`;
+    }
     if (song2.albumImage) {
         document.getElementById('song-2-img').style = "width:100px;height:100px;margin-bottom:10px;display:inline;";
         document.getElementById('song-2-img').src = song2.albumImage;
@@ -1965,7 +1973,13 @@ async function firstQuestion() {
         document.getElementById('song-2-preview').style = "display:none;";
     }
     document.getElementById('song-2-streams').style = "display:none;";
-    document.getElementById('song-2-streams').innerText = `${song2.streams.toLocaleString()} Streams`;
+    if (higherOrLowerType === 'streams') {
+        document.getElementById('song-2-streams').innerText = `${song2.streams.toLocaleString()} Streams`;
+    }
+    else {
+        const song2Date = new Date(song2.streams);
+        document.getElementById('song-2-streams').innerText = `${song2Date.toLocaleDateString()} at ${song2Date.toLocaleTimeString()}`;
+    }
 
     // streams: songsData[randomIndex].streams,
     // name: trackData.songName,
@@ -2027,7 +2041,13 @@ async function nextQuestion() {
     else {
         document.getElementById('song-1-preview').style = "display:none;";
     }
-    document.getElementById('song-1-streams').innerText = `${song1.streams.toLocaleString()} Streams`;
+    if (higherOrLowerType === 'streams') {
+        document.getElementById('song-1-streams').innerText = `${song1.streams.toLocaleString()} Streams`;
+    }
+    else {
+        const song1Date = new Date(song1.streams);
+        document.getElementById('song-1-streams').innerText = `${song1Date.toLocaleDateString()} at ${song1Date.toLocaleTimeString()}`;
+    }
     if (song2.albumImage) {
         document.getElementById('song-2-img').style = "width:100px;height:100px;margin-bottom:10px;display:inline;";
         document.getElementById('song-2-img').src = song2.albumImage;
@@ -2049,7 +2069,13 @@ async function nextQuestion() {
         document.getElementById('song-2-preview').style = "display:none;";
     }
     document.getElementById('song-2-streams').style = "display:none;";
-    document.getElementById('song-2-streams').innerText = `${song2.streams.toLocaleString()} Streams`;
+    if (higherOrLowerType === 'streams') {
+        document.getElementById('song-2-streams').innerText = `${song2.streams.toLocaleString()} Streams`;
+    }
+    else {
+        const song2Date = new Date(song2.streams);
+        document.getElementById('song-2-streams').innerText = `${song2Date.toLocaleDateString()} at ${song2Date.toLocaleTimeString()}`;
+    }
 
     // Set up the options
     document.getElementById('option-1').onclick = () => {
@@ -2080,7 +2106,13 @@ function checkAnswer(selectedSong, otherSong) {
     setTimeout(() => {
         document.getElementById('song-2-streams').style = "display:block;";
         setTimeout(() => {
-            const isCorrect = selectedSong.streams >= otherSong.streams;
+            let isCorrect;
+            if (higherOrLowerType === 'streams') {
+                isCorrect = selectedSong.streams >= otherSong.streams;
+            }
+            else {
+                isCorrect = selectedSong.streams <= otherSong.streams;
+            }
 
             if (isCorrect) {
                 currentScore++;
@@ -2125,7 +2157,13 @@ function checkFirstAnswer(selectedSong, otherSong, optionSelected, optionNotSele
     setTimeout(() => {
         document.getElementById('song-' + optionNotSelected + '-streams').style = "display:block;";
         setTimeout(() => {
-            const isCorrect = selectedSong.streams >= otherSong.streams;
+            let isCorrect;
+            if (higherOrLowerType === 'streams') {
+                isCorrect = selectedSong.streams >= otherSong.streams;
+            }
+            else {
+                isCorrect = selectedSong.streams <= otherSong.streams;
+            }
 
             if (isCorrect) {
                 currentScore++;
@@ -2318,49 +2356,92 @@ async function calculateStatsForHigherLower(startTime, endTime) {
 }
 
 async function calculateTopItemsForHigherLower(songs) {
-    const trackCount = {};
-    const albumCount = {};
-    const artistCount = {};
+    if (higherOrLowerType === 'streams') {
+        const trackCount = {};
+        const albumCount = {};
+        const artistCount = {};
 
-    songs.forEach(song => {
-        const trackId = song.trackId;
-        const albumId = song.albumId;
-        const artistIds = song.artistIds;
+        songs.forEach(song => {
+            const trackId = song.trackId;
+            const albumId = song.albumId;
+            const artistIds = song.artistIds;
+
+            if (higherOrLowerCategory === 'songs') {
+                if (!trackCount[trackId]) {
+                    trackCount[trackId] = 0;
+                }
+                trackCount[trackId]++;
+            }
+
+            if (higherOrLowerCategory === 'albums') {
+                if (!albumCount[albumId]) albumCount[albumId] = 0;
+                albumCount[albumId]++;
+            }
+
+            if (higherOrLowerCategory === 'artists') {
+                artistIds.forEach(artistId => {
+                    if (!artistCount[artistId]) artistCount[artistId] = 0;
+                    artistCount[artistId]++;
+                });
+            }
+        });
 
         if (higherOrLowerCategory === 'songs') {
-            if (!trackCount[trackId]) {
-                trackCount[trackId] = 0;
+            return Object.entries(trackCount)
+                .filter(([_, count]) => count > 1)
+                .sort((a, b) => b[1] - a[1]);
+        } else if (higherOrLowerCategory === 'albums') {
+            return Object.entries(albumCount)
+                .filter(([_, count]) => count > 1)
+                .sort((a, b) => b[1] - a[1]);
+        } else {
+            return Object.entries(artistCount)
+                .filter(([_, count]) => count > 1)
+                .sort((a, b) => b[1] - a[1]);
+        }
+    }
+    else {
+        const trackFirstSeen = {};
+        const albumFirstSeen = {};
+        const artistFirstSeen = {};
+
+        songs.forEach(song => {
+            const trackId = song.trackId;
+            const albumId = song.albumId;
+            const artistIds = song.artistIds;
+            const songTime = new Date(song.endTime).getTime();
+
+            if (higherOrLowerCategory === 'songs') {
+                if (!trackFirstSeen[trackId] || songTime < trackFirstSeen[trackId]) {
+                    trackFirstSeen[trackId] = songTime;
+                }
             }
-            trackCount[trackId]++;
-        }
 
-        if (higherOrLowerCategory === 'albums') {
-            if (!albumCount[albumId]) albumCount[albumId] = 0;
-            albumCount[albumId]++;
-        }
+            if (higherOrLowerCategory === 'albums') {
+                if (!albumFirstSeen[albumId] || songTime < albumFirstSeen[albumId]) {
+                    albumFirstSeen[albumId] = songTime;
+                }
+            }
 
-        if (higherOrLowerCategory === 'artists') {
-            artistIds.forEach(artistId => {
-                if (!artistCount[artistId]) artistCount[artistId] = 0;
-                artistCount[artistId]++;
-            });
-        }
-    });
+            if (higherOrLowerCategory === 'artists') {
+                artistIds.forEach(artistId => {
+                    if (!artistFirstSeen[artistId] || songTime < artistFirstSeen[artistId]) {
+                        artistFirstSeen[artistId] = songTime;
+                    }
+                });
+            }
+        });
 
-    if (higherOrLowerCategory === 'songs') {
-        return Object.entries(trackCount)
-            .filter(([_, count]) => count > 1)
-            .sort((a, b) => b[1] - a[1]);
-    } else if (higherOrLowerCategory === 'albums') {
-        return Object.entries(albumCount)
-            .filter(([_, count]) => count > 1)
-            .sort((a, b) => b[1] - a[1]);
-    } else {
-        return Object.entries(artistCount)
-            .filter(([_, count]) => count > 1)
-            .sort((a, b) => b[1] - a[1]);
+        if (higherOrLowerCategory === 'songs') {
+            return Object.entries(trackFirstSeen)
+                .sort((a, b) => a[1] - b[1]); // oldest first
+        } else if (higherOrLowerCategory === 'albums') {
+            return Object.entries(albumFirstSeen)
+                .sort((a, b) => a[1] - b[1]); // oldest first
+        } else {
+            return Object.entries(artistFirstSeen)
+                .sort((a, b) => a[1] - b[1]); // oldest first
+        }
     }
 
 }
-
-// add which one did you listen to first? instead of just streams
