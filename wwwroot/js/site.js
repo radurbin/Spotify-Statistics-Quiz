@@ -834,6 +834,7 @@ function goBack() {
     if (currentAudio) {
         currentAudio.pause();
     }
+    restartClicked = false;
     document.getElementById('billboard-charts-screen').style.display = 'none';
     document.getElementById('billboard-charts-options').style.display = 'none';
     document.getElementById('quiz-options').style.display = 'none';
@@ -1721,8 +1722,11 @@ function showHigherOrLowerOptions() {
 
 let currentScore = 0;
 let currentQuestion = 0;
+let lastData = [];
+let restartClicked = false;
 let songsData = [];
-let gameInProgress = false;
+let albumsData = [];
+let artistsData = [];
 let songSelected;
 let higherOrLowerCategory;
 
@@ -1737,7 +1741,6 @@ document.getElementById('song-2-preview').addEventListener('click', function (ev
 
 // Start the game
 async function startHigherOrLower() {
-    gameInProgress = true;
     
     higherOrLowerCategory = document.getElementById('higher-or-lower-category').value;
     const timespan = document.getElementById('higher-or-lower-timespan').value;
@@ -1829,39 +1832,93 @@ async function startHigherOrLower() {
         document.getElementById('higher-or-lower-time-range').innerText = "Your All Time Spotify History";
     }
 
-    const topItems = await calculateStatsForHigherLower(startTime, endTime);
-    currentScore = 0;
-    currentQuestion = 0;
+    if (!restartClicked) {
+        const topItems = await calculateStatsForHigherLower(startTime, endTime);
+        currentScore = 0;
+        currentQuestion = 0;
 
-    document.getElementById('start-screen').style.display = 'none';
-    document.getElementById('higher-or-lower-options').style.display = 'none';
-    document.getElementById('higher-or-lower-game-screen').style.display = 'block';
-    document.getElementById('result').style.display = 'none';
-    document.getElementById('score').innerText = `Score: ${currentScore}`;
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('higher-or-lower-options').style.display = 'none';
+        document.getElementById('higher-or-lower-game-screen').style.display = 'block';
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('score').innerText = `Score: ${currentScore}`;
 
-    // Fetch data from API or local storage
-    if (higherOrLowerCategory === 'songs') {
-        songsData = topItems.map(song => ({
-            trackId: song[0],
-            streams: song[1]
-            // add artist name, image, and sample for songs
-        }));
+        // Fetch data from API or local storage
+        if (higherOrLowerCategory === 'songs') {
+            songsData = topItems.map(song => ({
+                trackId: song[0],
+                streams: song[1]
+            }));
+            if (!restartClicked) {
+                lastData = songsData;
+            }
+        }
+        else if (higherOrLowerCategory === 'albums') {
+            albumsData = topItems.map(album => ({
+                albumId: album[0],
+                streams: album[1]
+            }));
+            if (!restartClicked) {
+                lastData = albumsData;
+            }
+        }
+        else {
+            artistsData = topItems.map(artist => ({
+                artistId: artist[0],
+                streams: artist[1]
+            }));
+            if (!restartClicked) {
+                lastData = artistsData;
+            }
+        }
+
+        firstQuestion();
     }
+    else {
+        currentScore = 0;
+        currentQuestion = 0;
 
-    firstQuestion();
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('higher-or-lower-options').style.display = 'none';
+        document.getElementById('higher-or-lower-game-screen').style.display = 'block';
+        document.getElementById('result').style.display = 'none';
+        document.getElementById('score').innerText = `Score: ${currentScore}`;
+
+        // Fetch data from API or local storage
+        if (higherOrLowerCategory === 'songs') {
+            songsData = lastData;
+        }
+        else if (higherOrLowerCategory === 'albums') {
+            albumsData = lastData;
+        }
+        else {
+            artistsData = lastData;
+        }
+
+        firstQuestion();
+    }
+    
 }
 
 function removeSongFromData(song) {
-    songsData = songsData.filter(item => item.trackId !== song.trackId);
+    if (higherOrLowerCategory === 'songs') {
+        songsData = songsData.filter(item => item.trackId !== song.trackId);
+    }
+    else if (higherOrLowerCategory === 'albums') {
+        albumsData = albumsData.filter(item => item.albumId !== song.albumId);
+    }
+    else {
+        artistsData = artistsData.filter(item => item.artistId !== song.artistId);
+    }
 }
 
 async function firstQuestion() {
     document.getElementById('option-1').style.pointerEvents = 'auto';
     document.getElementById('option-2').style.pointerEvents = 'auto';
     
-    const song1 = await getRandomSong();
+    const song1 = await getRandomItem();
     removeSongFromData(song1);
-    const song2 = await getRandomSong();
+    const song2 = await getRandomItem();
     removeSongFromData(song2);
 
     // Display the songs
@@ -1872,7 +1929,12 @@ async function firstQuestion() {
     else {
         document.getElementById('song-1-img').style = "display:none;";
     }
-    document.getElementById('song-1-name').innerText = song1.name + " (" + song1.artist + ")";
+    if (song1.artist) {
+        document.getElementById('song-1-name').innerText = song1.name + " (" + song1.artist + ")";
+    }
+    else {
+        document.getElementById('song-1-name').innerText = song1.name;
+    }
     if (song1.preview) {
         document.getElementById('song-1-preview').style = "display:inline;";
         document.getElementById('song-1-preview').onclick = () => playPreview(song1.preview);
@@ -1889,7 +1951,12 @@ async function firstQuestion() {
     else {
         document.getElementById('song-2-img').style = "display:none;";
     }
-    document.getElementById('song-2-name').innerText = song2.name + " (" + song2.artist + ")";
+    if (song2.artist) {
+        document.getElementById('song-2-name').innerText = song2.name + " (" + song2.artist + ")";
+    }
+    else {
+        document.getElementById('song-2-name').innerText = song2.name;
+    }
     if (song2.preview) {
         document.getElementById('song-2-preview').style = "display:inline;";
         document.getElementById('song-2-preview').onclick = () => playPreview(song2.preview);
@@ -1922,10 +1989,12 @@ async function firstQuestion() {
 
 // Proceed to the next question
 async function nextQuestion() {
-    document.getElementById('song-2-streams').style = "display:none;";
+    
     const song1 = songSelected;
-    const song2 = await getRandomSong();
+    const song2 = await getRandomItem();
     removeSongFromData(song2);
+    document.getElementById('song-1-streams').style = "display:block;";
+    document.getElementById('song-2-streams').style = "display:none;";
 
     // Display the songs
     if (song1.albumImage) {
@@ -1935,7 +2004,12 @@ async function nextQuestion() {
     else {
         document.getElementById('song-1-img').style = "display:none;";
     }
-    document.getElementById('song-1-name').innerText = song1.name + " (" + song1.artist + ")";
+    if (song1.artist) {
+        document.getElementById('song-1-name').innerText = song1.name + " (" + song1.artist + ")";
+    }
+    else {
+        document.getElementById('song-1-name').innerText = song1.name;
+    }
     if (song1.preview) {
         document.getElementById('song-1-preview').style = "display:inline;";
         document.getElementById('song-1-preview').onclick = () => playPreview(song1.preview);
@@ -1951,7 +2025,12 @@ async function nextQuestion() {
     else {
         document.getElementById('song-2-img').style = "display:none;";
     }
-    document.getElementById('song-2-name').innerText = song2.name + " (" + song2.artist + ")";
+    if (song2.artist) {
+        document.getElementById('song-2-name').innerText = song2.name + " (" + song2.artist + ")";
+    }
+    else {
+        document.getElementById('song-2-name').innerText = song2.name;
+    }
     if (song2.preview) {
         document.getElementById('song-2-preview').style = "display:inline;";
         document.getElementById('song-2-preview').onclick = () => playPreview(song2.preview);
@@ -2009,8 +2088,8 @@ function checkAnswer(selectedSong, otherSong) {
             document.getElementById('result').style.display = 'block';
             document.getElementById('score').innerText = `Score: ${currentScore}`;
             currentQuestion++;
-        }, 1000);
-    }, 1500);
+        }, 800);
+    }, 1200);
 
 
     // document.getElementById('next-question').style.display = 'block';
@@ -2054,8 +2133,8 @@ function checkFirstAnswer(selectedSong, otherSong, optionSelected, optionNotSele
             document.getElementById('result').style.display = 'block';
             document.getElementById('score').innerText = `Score: ${currentScore}`;
             currentQuestion++;
-        }, 1000);
-    }, 1500);
+        }, 800);
+    }, 1200);
 
 
     // document.getElementById('next-question').style.display = 'block';
@@ -2066,7 +2145,6 @@ function endGame() {
     if (currentAudio) {
         currentAudio.pause();
     }
-    gameInProgress = false;
     document.getElementById('song-1-img').style = "display:none;";
     document.getElementById('song-1-name').innerText = "";
     document.getElementById('song-1-preview').style = "display:none;";
@@ -2083,29 +2161,66 @@ function endGame() {
 // Restart the game
 function restartGame() {
     document.getElementById('game-over-screen').style.display = 'none';
+    restartClicked = true;
     startHigherOrLower();
 }
 
 // Get a random song from the data
-async function getRandomSong() {
-    if (songsData.length == 0) {
-        endGame();
+async function getRandomItem() {
+    if (higherOrLowerCategory === 'songs') {
+        if (songsData.length == 0) {
+            endGame();
+        }
+        const randomIndex = Math.floor(Math.random() * songsData.length);
+        const trackData = await fetchTrackDataForHigherLower(songsData[randomIndex].trackId);
+        return {
+                    streams: songsData[randomIndex].streams,
+                    name: trackData.songName,
+                    artist: trackData.artistName,
+                    albumImage: trackData.albumImage,
+                    preview: trackData.preview,
+                    trackId: songsData[randomIndex].trackId
+                };
     }
-    const randomIndex = Math.floor(Math.random() * songsData.length);
-    const trackData = await fetchTrackDataForHigherLower(songsData[randomIndex].trackId);
-    return {
-                streams: songsData[randomIndex].streams,
-                name: trackData.songName,
-                artist: trackData.artistName,
-                albumImage: trackData.albumImage,
-                preview: trackData.preview,
-                trackId: songsData[randomIndex].trackId
-            };
+    else if (higherOrLowerCategory === 'albums') {
+        if (albumsData.length == 0) {
+            endGame();
+        }
+        const randomIndex = Math.floor(Math.random() * albumsData.length);
+        const albumData = await fetchAlbumDataForHigherLower(albumsData[randomIndex].albumId);
+        // name: data.item.name || `Album ${albumId}`,
+        // artist: data.item.artists[0]?.name || `Artist ${albumId}`,
+        // albumImage: data.item.image || ''
+        return {
+                    streams: albumsData[randomIndex].streams,
+                    name: albumData.name,
+                    artist: albumData.artist,
+                    albumImage: albumData.albumImage,
+                    albumId: albumsData[randomIndex].albumId
+                };
+    }
+    else {
+        if (artistsData.length == 0) {
+            endGame();
+        }
+        const randomIndex = Math.floor(Math.random() * artistsData.length);
+        const artistData = await fetchArtistDataForHigherLower(artistsData[randomIndex].artistId);
+        //         name: data.item.name || `Artist ${artistId}`,
+        //          image: data.item.image || ''
+        return {
+                    streams: artistsData[randomIndex].streams,
+                    name: artistData.name,
+                    albumImage: artistData.image,
+                    artistId: artistsData[randomIndex].artistId
+                };
+    }
 }
 
+const trackHigherLowerDataLookup = {};
+
 async function fetchTrackDataForHigherLower(trackId) {
-    if (trackArtistNameLookup[trackId]) {
-        return trackArtistNameLookup[trackId];
+    if (trackHigherLowerDataLookup[trackId]) {
+        return trackHigherLowerDataLookup[trackId];
     }
 
     const response = await safeFetch(`https://api.stats.fm/api/v1/tracks/${trackId}`);
@@ -2123,8 +2238,49 @@ async function fetchTrackDataForHigherLower(trackId) {
     };
 
 
-    trackArtistNameLookup[trackId] = trackData;
+    trackHigherLowerDataLookup[trackId] = trackData;
     return trackData;
+}
+
+async function fetchAlbumDataForHigherLower(albumId) {
+    if (albumDataLookup[albumId]) {
+        return albumDataLookup[albumId];
+    }
+
+    const response = await safeFetch(`https://api.stats.fm/api/v1/albums/${albumId}`);
+    if (response.status === 503) {
+        alert('Server returned a 503 error. Refresh, wait a minute, and try again lol.');
+        return null;
+    }
+    const data = await response.json();
+    const albumData = {
+        name: data.item.name || `Album ${albumId}`,
+        artist: data.item.artists[0]?.name || `Artist ${albumId}`,
+        albumImage: data.item.image || ''
+    };
+
+    albumDataLookup[albumId] = albumData;
+    return albumData;
+}
+
+async function fetchArtistDataForHigherLower(artistId) {
+    if (artistNameLookup[artistId]) {
+        return artistNameLookup[artistId];
+    }
+
+    const response = await safeFetch(`https://api.stats.fm/api/v1/artists/${artistId}`);
+    if (response.status === 503) {
+        alert('Server returned a 503 error. Refresh, wait a minute, and try again lol.');
+        return null;
+    }
+    const data = await response.json();
+    const artistData = {
+        name: data.item.name || `Artist ${artistId}`,
+        image: data.item.image || ''
+    };
+
+    artistNameLookup[artistId] = artistData;
+    return artistData;
 }
 
 async function calculateStatsForHigherLower(startTime, endTime) {
@@ -2187,6 +2343,6 @@ async function calculateTopItemsForHigherLower(songs) {
 
 }
 
-// add artists and albums
 // add which one did you listen to first? instead of just streams
-// if restart, keep the same data, don't call api again
+// fix sizing inconsistencies
+// have it stay visually clicked from when selected to when switched
