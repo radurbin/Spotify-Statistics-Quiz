@@ -204,3 +204,25 @@ p {
     cursor: pointer;
     color: blue;
 }
+
+.button-clicked {
+        background-color: #006400 !important; /* Darker green */
+        color: #FFFFFF !important;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+}
+
+.button-not-clicked {
+    background-color: #FFFFFF !important;
+    border: none;
+    color: #1DB954 !important;
+    padding: 15px 30px;
+    font-size: 1rem;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}

@@ -1980,8 +1980,16 @@ async function firstQuestion() {
     //              }
 
     // Set up the options
-    document.getElementById('option-1').onclick = () => checkFirstAnswer(song1, song2, 1, 2);
-    document.getElementById('option-2').onclick = () => checkFirstAnswer(song2, song1, 2, 1);
+    document.getElementById('option-1').onclick = () => {
+        document.getElementById('option-1').className = 'btn btn-primary button-clicked';
+        checkFirstAnswer(song1, song2, 1, 2);
+    };
+    
+    document.getElementById('option-2').onclick = () => {
+        document.getElementById('option-2').className = 'btn btn-primary button-clicked';
+        checkFirstAnswer(song2, song1, 2, 1);
+    };
+    
 
     // document.getElementById('next-question').style.display = 'none';
     document.getElementById('result').style.display = 'none';
@@ -1993,6 +2001,8 @@ async function nextQuestion() {
     const song1 = songSelected;
     const song2 = await getRandomItem();
     removeSongFromData(song2);
+    document.getElementById('option-1').className = 'btn btn-primary button-not-clicked';
+    document.getElementById('option-2').className = 'btn btn-primary button-not-clicked';
     document.getElementById('song-1-streams').style = "display:block;";
     document.getElementById('song-2-streams').style = "display:none;";
 
@@ -2042,8 +2052,16 @@ async function nextQuestion() {
     document.getElementById('song-2-streams').innerText = `${song2.streams.toLocaleString()} Streams`;
 
     // Set up the options
-    document.getElementById('option-1').onclick = () => checkAnswer(song1, song2);
-    document.getElementById('option-2').onclick = () => checkAnswer(song2, song1);
+    document.getElementById('option-1').onclick = () => {
+        document.getElementById('option-1').className = 'btn btn-primary button-clicked';
+        checkAnswer(song1, song2);
+    };
+    
+    document.getElementById('option-2').onclick = () => {
+        document.getElementById('option-2').className = 'btn btn-primary button-clicked';
+        checkAnswer(song2, song1);
+    };
+    
 
     // document.getElementById('next-question').style.display = 'none';
     document.getElementById('result').style.display = 'none';
@@ -2145,6 +2163,8 @@ function endGame() {
     if (currentAudio) {
         currentAudio.pause();
     }
+    document.getElementById('option-1').className = 'btn btn-primary button-not-clicked';
+    document.getElementById('option-2').className = 'btn btn-primary button-not-clicked';
     document.getElementById('song-1-img').style = "display:none;";
     document.getElementById('song-1-name').innerText = "";
     document.getElementById('song-1-preview').style = "display:none;";
@@ -2344,5 +2364,3 @@ async function calculateTopItemsForHigherLower(songs) {
 }
 
 // add which one did you listen to first? instead of just streams
-// fix sizing inconsistencies
-// have it stay visually clicked from when selected to when switched
