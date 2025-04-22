@@ -1960,12 +1960,14 @@ function getRandomSong() {
 async function calculateStatsForHigherLower(startTime, endTime) {
     showLoadingScreen();
     const unfilteredSongs = await fetchDataForStats(startTime, endTime);
-    const data = unfilteredSongs.filter(song => {
+    const filteredSongs = unfilteredSongs.filter(song => {
         const songEndTime = new Date(song.endTime).getTime();
         return songEndTime >= startTime && songEndTime <= endTime;
     });
 
-    const topSongs = Object.entries(topSongsCounts)
+    console.log(filteredSongs);
+
+    const topSongs = Object.entries(filteredSongs)
         .map(([id, info]) => ({ id, ...info }))
         .sort((a, b) => b.count - a.count);
 
