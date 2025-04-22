@@ -1,4 +1,4 @@
-﻿const localEndTime = new Date("2024-05-27T18:57:21.029Z").getTime();
+﻿const localEndTime = new Date("2025-04-22T12:59:00.000Z").getTime(); // most recent timestamp saved locally
 let category = '';
 let timespan = '';
 let lives = 5;
@@ -73,6 +73,8 @@ function setQuizTime(timespan) {
         document.getElementById('quiz-time').innerText = "Year 2 of Long Distance";
     } else if (timespan === 'year-3-ld') {
         document.getElementById('quiz-time').innerText = "Year 3 of Long Distance";
+    } else if (timespan === 'year-4-ld') {
+        document.getElementById('quiz-time').innerText = "Year 4 of Long Distance";
     } else if (timespan === '2017') {
         document.getElementById('quiz-time').innerText = timespan;
     } else if (timespan === '2018') {
@@ -88,6 +90,8 @@ function setQuizTime(timespan) {
     } else if (timespan === '2023') {
         document.getElementById('quiz-time').innerText = timespan;
     } else if (timespan === '2024') {
+        document.getElementById('quiz-time').innerText = timespan;
+    } else if (timespan === '2025') {
         document.getElementById('quiz-time').innerText = timespan;
     } else if (timespan === 'eras-tour') {
         document.getElementById('quiz-time').innerText = "The Month Before The Eras Tour";
@@ -224,6 +228,9 @@ async function populateQuiz() {
     } else if (timespan === 'year-3-ld') {
         startTime = new Date('2023-08-14T00:00:00').getTime();
         endTime = new Date('2024-05-06T23:59:59').getTime();
+    } else if (timespan === 'year-4-ld') {
+        startTime = new Date('2024-08-19T00:00:00').getTime();
+        endTime = new Date('2025-05-06T23:59:59').getTime();
     } else if (timespan === '2017') {
         startTime = new Date('2017-01-01T00:00:00').getTime();
         endTime = new Date('2017-12-31T23:59:59').getTime();
@@ -248,6 +255,9 @@ async function populateQuiz() {
     } else if (timespan === '2024') {
         startTime = new Date('2024-01-01T00:00:00').getTime();
         endTime = new Date('2024-12-31T23:59:59').getTime();
+    } else if (timespan === '2025') {
+        startTime = new Date('2025-01-01T00:00:00').getTime();
+        endTime = new Date('2025-12-31T23:59:59').getTime();
     } else if (timespan === 'eras-tour') {
         startTime = new Date('2023-03-30T12:00:00').getTime();
         endTime = new Date('2023-04-30T23:59:59').getTime();
@@ -864,6 +874,10 @@ function showStats() {
         startTime = new Date('2023-08-14T00:00:00').getTime();
         endTime = new Date('2024-05-06T23:59:59').getTime();
         document.getElementById('stats-time-range').innerText = "Year 3 of Long Distance";
+    } else if (timespan === 'year-4-ld') {
+        startTime = new Date('2024-08-19T00:00:00').getTime();
+        endTime = new Date('2025-05-06T23:59:59').getTime();
+        document.getElementById('stats-time-range').innerText = "Year 4 of Long Distance";
     } else if (timespan === '2017') {
         startTime = new Date('2017-01-01T00:00:00').getTime();
         endTime = new Date('2017-12-31T23:59:59').getTime();
@@ -895,6 +909,10 @@ function showStats() {
     } else if (timespan === '2024') {
         startTime = new Date('2024-01-01T00:00:00').getTime();
         endTime = new Date('2024-12-31T23:59:59').getTime();
+        document.getElementById('stats-time-range').innerText = "2024";
+    } else if (timespan === '2025') {
+        startTime = new Date('2025-01-01T00:00:00').getTime();
+        endTime = new Date('2025-12-31T23:59:59').getTime();
         document.getElementById('stats-time-range').innerText = "2024";
     } else if (timespan === 'eras-tour') {
         startTime = new Date('2023-03-30T12:00:00').getTime();
