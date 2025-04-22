@@ -944,7 +944,7 @@ function showStats() {
     } else if (timespan === '2025') {
         startTime = new Date('2025-01-01T00:00:00').getTime();
         endTime = new Date('2025-12-31T23:59:59').getTime();
-        document.getElementById('stats-time-range').innerText = "2024";
+        document.getElementById('stats-time-range').innerText = "2025";
     } else if (timespan === 'eras-tour') {
         startTime = new Date('2023-03-30T12:00:00').getTime();
         endTime = new Date('2023-04-30T23:59:59').getTime();
