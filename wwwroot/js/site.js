@@ -1726,19 +1726,14 @@ let gameInProgress = false;
 let songSelected;
 let higherOrLowerCategory;
 
-const mockData = [
-    { trackId: 1, trackName: "Song A", artistName: "Artist 1", streams: 5000000 },
-    { trackId: 2, trackName: "Song B", artistName: "Artist 2", streams: 4500000 },
-    { trackId: 3, trackName: "Song C", artistName: "Artist 3", streams: 6000000 },
-    { trackId: 4, trackName: "Song D", artistName: "Artist 4", streams: 4200000 },
-    { trackId: 5, trackName: "Song E", artistName: "Artist 5", streams: 5500000 },
-    { trackId: 6, trackName: "Song F", artistName: "Artist 6", streams: 7000000 },
-    { trackId: 7, trackName: "Song G", artistName: "Artist 7", streams: 4800000 },
-    { trackId: 8, trackName: "Song H", artistName: "Artist 8", streams: 4900000 },
-    { trackId: 9, trackName: "Song I", artistName: "Artist 9", streams: 7500000 },
-    { trackId: 10, trackName: "Song J", artistName: "Artist 10", streams: 5300000 },
-    // Add more songs as needed
-];
+document.getElementById('song-1-preview').addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+
+document.getElementById('song-2-preview').addEventListener('click', function (event) {
+    event.stopPropagation();
+});
+
 
 // Start the game
 async function startHigherOrLower() {
@@ -1841,6 +1836,7 @@ async function startHigherOrLower() {
     document.getElementById('start-screen').style.display = 'none';
     document.getElementById('higher-or-lower-options').style.display = 'none';
     document.getElementById('higher-or-lower-game-screen').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
     document.getElementById('score').innerText = `Score: ${currentScore}`;
 
     // Fetch data from API or local storage
@@ -1862,6 +1858,7 @@ function removeSongFromData(song) {
 async function firstQuestion() {
     document.getElementById('option-1').style.pointerEvents = 'auto';
     document.getElementById('option-2').style.pointerEvents = 'auto';
+    
     const song1 = await getRandomSong();
     removeSongFromData(song1);
     const song2 = await getRandomSong();
@@ -1878,13 +1875,13 @@ async function firstQuestion() {
     document.getElementById('song-1-name').innerText = song1.name + " (" + song1.artist + ")";
     if (song1.preview) {
         document.getElementById('song-1-preview').style = "display:inline;";
-        document.getElementById('song-1-preview').onclick = "playPreview('${song1.preview}')";
+        document.getElementById('song-1-preview').onclick = () => playPreview(song1.preview);
     }
     else {
         document.getElementById('song-1-preview').style = "display:none;";
     }
     document.getElementById('song-1-streams').style = "display:none;";
-    document.getElementById('song-1-streams').innerText = `Streams: ${song1.streams.toLocaleString()}`;
+    document.getElementById('song-1-streams').innerText = `${song1.streams.toLocaleString()} Streams`;
     if (song2.albumImage) {
         document.getElementById('song-2-img').style = "width:100px;height:100px;margin-bottom:10px;display:inline;";
         document.getElementById('song-2-img').src = song2.albumImage;
@@ -1895,13 +1892,13 @@ async function firstQuestion() {
     document.getElementById('song-2-name').innerText = song2.name + " (" + song2.artist + ")";
     if (song2.preview) {
         document.getElementById('song-2-preview').style = "display:inline;";
-        document.getElementById('song-2-preview').onclick = "playPreview('${song2.preview}')";
+        document.getElementById('song-2-preview').onclick = () => playPreview(song2.preview);
     }
     else {
         document.getElementById('song-2-preview').style = "display:none;";
     }
     document.getElementById('song-2-streams').style = "display:none;";
-    document.getElementById('song-2-streams').innerText = `Streams: ${song2.streams.toLocaleString()}`;
+    document.getElementById('song-2-streams').innerText = `${song2.streams.toLocaleString()} Streams`;
 
     // streams: songsData[randomIndex].streams,
     // name: trackData.songName,
@@ -1941,12 +1938,12 @@ async function nextQuestion() {
     document.getElementById('song-1-name').innerText = song1.name + " (" + song1.artist + ")";
     if (song1.preview) {
         document.getElementById('song-1-preview').style = "display:inline;";
-        document.getElementById('song-1-preview').onclick = "playPreview('${song1.preview}')";
+        document.getElementById('song-1-preview').onclick = () => playPreview(song1.preview);
     }
     else {
         document.getElementById('song-1-preview').style = "display:none;";
     }
-    document.getElementById('song-1-streams').innerText = `Streams: ${song1.streams.toLocaleString()}`;
+    document.getElementById('song-1-streams').innerText = `${song1.streams.toLocaleString()} Streams`;
     if (song2.albumImage) {
         document.getElementById('song-2-img').style = "width:100px;height:100px;margin-bottom:10px;display:inline;";
         document.getElementById('song-2-img').src = song2.albumImage;
@@ -1957,13 +1954,13 @@ async function nextQuestion() {
     document.getElementById('song-2-name').innerText = song2.name + " (" + song2.artist + ")";
     if (song2.preview) {
         document.getElementById('song-2-preview').style = "display:inline;";
-        document.getElementById('song-2-preview').onclick = "playPreview('${song2.preview}')";
+        document.getElementById('song-2-preview').onclick = () => playPreview(song2.preview);
     }
     else {
         document.getElementById('song-2-preview').style = "display:none;";
     }
     document.getElementById('song-2-streams').style = "display:none;";
-    document.getElementById('song-2-streams').innerText = `Streams: ${song2.streams.toLocaleString()}`;
+    document.getElementById('song-2-streams').innerText = `${song2.streams.toLocaleString()} Streams`;
 
     // Set up the options
     document.getElementById('option-1').onclick = () => checkAnswer(song1, song2);
@@ -1975,6 +1972,9 @@ async function nextQuestion() {
 
 // Check the player's answer
 function checkAnswer(selectedSong, otherSong) {
+    if (currentAudio) {
+        currentAudio.pause();
+    }
     
     document.getElementById('option-1').style.pointerEvents = 'none';
     document.getElementById('option-2').style.pointerEvents = 'none';
@@ -2017,6 +2017,9 @@ function checkAnswer(selectedSong, otherSong) {
 }
 
 function checkFirstAnswer(selectedSong, otherSong, optionSelected, optionNotSelected) {
+    if (currentAudio) {
+        currentAudio.pause();
+    }
     
     document.getElementById('option-1').style.pointerEvents = 'none';
     document.getElementById('option-2').style.pointerEvents = 'none';
@@ -2060,6 +2063,9 @@ function checkFirstAnswer(selectedSong, otherSong, optionSelected, optionNotSele
 
 // End the game
 function endGame() {
+    if (currentAudio) {
+        currentAudio.pause();
+    }
     gameInProgress = false;
     document.getElementById('song-1-img').style = "display:none;";
     document.getElementById('song-1-name').innerText = "";
@@ -2181,7 +2187,6 @@ async function calculateTopItemsForHigherLower(songs) {
 
 }
 
-// clickable music
 // add artists and albums
 // add which one did you listen to first? instead of just streams
 // if restart, keep the same data, don't call api again
