@@ -1744,7 +1744,7 @@ const mockData = [
 async function startHigherOrLower() {
     gameInProgress = true;
     
-    higherOrLowerCategorycategory = document.getElementById('higher-or-lower-category').value;
+    higherOrLowerCategory = document.getElementById('higher-or-lower-category').value;
     const timespan = document.getElementById('higher-or-lower-timespan').value;
     let endTime = timespan === 'custom' ? new Date(document.getElementById('higher-or-lower-custom-end').value).getTime() : Date.now();
     let startTime;
@@ -1859,38 +1859,110 @@ function removeSongFromData(song) {
     songsData = songsData.filter(item => item.trackId !== song.trackId);
 }
 
-function firstQuestion() {
+async function firstQuestion() {
     document.getElementById('option-1').style.pointerEvents = 'auto';
     document.getElementById('option-2').style.pointerEvents = 'auto';
-    const song1 = getRandomSong();
+    const song1 = await getRandomSong();
     removeSongFromData(song1);
-    const song2 = getRandomSong();
+    const song2 = await getRandomSong();
     removeSongFromData(song2);
 
     // Display the songs
-    document.getElementById('song-1-name').innerText = song1.trackId;
+    if (song1.albumImage) {
+        document.getElementById('song-1-img').style = "width:100px;height:100px;margin-bottom:10px;display:inline;";
+        document.getElementById('song-1-img').src = song1.albumImage;
+    }
+    else {
+        document.getElementById('song-1-img').style = "display:none;";
+    }
+    document.getElementById('song-1-name').innerText = song1.name + " (" + song1.artist + ")";
+    if (song1.preview) {
+        document.getElementById('song-1-preview').style = "display:inline;";
+        document.getElementById('song-1-preview').onclick = "playPreview('${song1.preview}')";
+    }
+    else {
+        document.getElementById('song-1-preview').style = "display:none;";
+    }
+    document.getElementById('song-1-streams').style = "display:none;";
     document.getElementById('song-1-streams').innerText = `Streams: ${song1.streams.toLocaleString()}`;
-    document.getElementById('song-2-name').innerText = song2.trackId;
+    if (song2.albumImage) {
+        document.getElementById('song-2-img').style = "width:100px;height:100px;margin-bottom:10px;display:inline;";
+        document.getElementById('song-2-img').src = song2.albumImage;
+    }
+    else {
+        document.getElementById('song-2-img').style = "display:none;";
+    }
+    document.getElementById('song-2-name').innerText = song2.name + " (" + song2.artist + ")";
+    if (song2.preview) {
+        document.getElementById('song-2-preview').style = "display:inline;";
+        document.getElementById('song-2-preview').onclick = "playPreview('${song2.preview}')";
+    }
+    else {
+        document.getElementById('song-2-preview').style = "display:none;";
+    }
+    document.getElementById('song-2-streams').style = "display:none;";
     document.getElementById('song-2-streams').innerText = `Streams: ${song2.streams.toLocaleString()}`;
 
+    // streams: songsData[randomIndex].streams,
+    // name: trackData.songName,
+    // artist: trackData.artistName,
+    // albumImage: trackData.albumImage,
+    // preview: trackData.preview
+    // listItems[i].innerHTML = `<img src="${imgSrc}" alt="${answers[i]}" style="width:50px;height:50px;margin-right:10px;">${displayText}`;
+    //              if (category === 'songs') {
+    //                  if (answersCounts[i].preview) {
+    //                      listItems[i].innerHTML += ` <button class="preview-button" onclick="playPreview('${answersCounts[i].preview}')">Play</button>`;
+    //                  }
+    //              }
+
     // Set up the options
-    document.getElementById('option-1').onclick = () => checkAnswer(song1, song2);
-    document.getElementById('option-2').onclick = () => checkAnswer(song2, song1);
+    document.getElementById('option-1').onclick = () => checkFirstAnswer(song1, song2, 1, 2);
+    document.getElementById('option-2').onclick = () => checkFirstAnswer(song2, song1, 2, 1);
 
     // document.getElementById('next-question').style.display = 'none';
     document.getElementById('result').style.display = 'none';
 }
 
 // Proceed to the next question
-function nextQuestion() {
+async function nextQuestion() {
+    document.getElementById('song-2-streams').style = "display:none;";
     const song1 = songSelected;
-    const song2 = getRandomSong();
+    const song2 = await getRandomSong();
     removeSongFromData(song2);
 
     // Display the songs
-    document.getElementById('song-1-name').innerText = song1.trackId;
+    if (song1.albumImage) {
+        document.getElementById('song-1-img').style = "width:100px;height:100px;margin-bottom:10px;display:inline;";
+        document.getElementById('song-1-img').src = song1.albumImage;
+    }
+    else {
+        document.getElementById('song-1-img').style = "display:none;";
+    }
+    document.getElementById('song-1-name').innerText = song1.name + " (" + song1.artist + ")";
+    if (song1.preview) {
+        document.getElementById('song-1-preview').style = "display:inline;";
+        document.getElementById('song-1-preview').onclick = "playPreview('${song1.preview}')";
+    }
+    else {
+        document.getElementById('song-1-preview').style = "display:none;";
+    }
     document.getElementById('song-1-streams').innerText = `Streams: ${song1.streams.toLocaleString()}`;
-    document.getElementById('song-2-name').innerText = song2.trackId;
+    if (song2.albumImage) {
+        document.getElementById('song-2-img').style = "width:100px;height:100px;margin-bottom:10px;display:inline;";
+        document.getElementById('song-2-img').src = song2.albumImage;
+    }
+    else {
+        document.getElementById('song-2-img').style = "display:none;";
+    }
+    document.getElementById('song-2-name').innerText = song2.name + " (" + song2.artist + ")";
+    if (song2.preview) {
+        document.getElementById('song-2-preview').style = "display:inline;";
+        document.getElementById('song-2-preview').onclick = "playPreview('${song2.preview}')";
+    }
+    else {
+        document.getElementById('song-2-preview').style = "display:none;";
+    }
+    document.getElementById('song-2-streams').style = "display:none;";
     document.getElementById('song-2-streams').innerText = `Streams: ${song2.streams.toLocaleString()}`;
 
     // Set up the options
@@ -1903,36 +1975,85 @@ function nextQuestion() {
 
 // Check the player's answer
 function checkAnswer(selectedSong, otherSong) {
-
+    
     document.getElementById('option-1').style.pointerEvents = 'none';
     document.getElementById('option-2').style.pointerEvents = 'none';
 
-    const isCorrect = selectedSong.streams >= otherSong.streams;
-
-    if (isCorrect) {
-        currentScore++;
-        document.getElementById('result').innerText = 'Correct!';
-        // first question, songSelected is set to the one selected - great!
-        // next question, if songSelected is the same, set it to the other one
-        if (songSelected == selectedSong) {
-            songSelected = otherSong;
-        }
-        else {
-            songSelected = selectedSong;
-        }
+    document.getElementById('song-1-streams').style = "display:block;";
+    setTimeout(() => {
+        document.getElementById('song-2-streams').style = "display:block;";
         setTimeout(() => {
-            nextQuestion();
-            document.getElementById('option-1').style.pointerEvents = 'auto';
-            document.getElementById('option-2').style.pointerEvents = 'auto';
-        }, 1000);
-    } else {
-        document.getElementById('result').innerText = 'Incorrect!';
-        endGame();
-    }
+            const isCorrect = selectedSong.streams >= otherSong.streams;
 
-    document.getElementById('result').style.display = 'block';
-    document.getElementById('score').innerText = `Score: ${currentScore}`;
-    currentQuestion++;
+            if (isCorrect) {
+                currentScore++;
+                document.getElementById('result').innerText = 'Correct!';
+                // first question, songSelected is set to the one selected - great!
+                // next question, if songSelected is the same, set it to the other one
+                if (songSelected == selectedSong) {
+                    songSelected = otherSong;
+                }
+                else {
+                    songSelected = selectedSong;
+                }
+                setTimeout(() => {
+                    nextQuestion();
+                    document.getElementById('option-1').style.pointerEvents = 'auto';
+                    document.getElementById('option-2').style.pointerEvents = 'auto';
+                }, 500);
+            } else {
+                document.getElementById('result').innerText = 'Incorrect!';
+                endGame();
+            }
+
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('score').innerText = `Score: ${currentScore}`;
+            currentQuestion++;
+        }, 1000);
+    }, 1500);
+
+
+    // document.getElementById('next-question').style.display = 'block';
+}
+
+function checkFirstAnswer(selectedSong, otherSong, optionSelected, optionNotSelected) {
+    
+    document.getElementById('option-1').style.pointerEvents = 'none';
+    document.getElementById('option-2').style.pointerEvents = 'none';
+
+    document.getElementById('song-' + optionSelected + '-streams').style = "display:block;";
+    setTimeout(() => {
+        document.getElementById('song-' + optionNotSelected + '-streams').style = "display:block;";
+        setTimeout(() => {
+            const isCorrect = selectedSong.streams >= otherSong.streams;
+
+            if (isCorrect) {
+                currentScore++;
+                document.getElementById('result').innerText = 'Correct!';
+                // first question, songSelected is set to the one selected - great!
+                // next question, if songSelected is the same, set it to the other one
+                if (songSelected == selectedSong) {
+                    songSelected = otherSong;
+                }
+                else {
+                    songSelected = selectedSong;
+                }
+                setTimeout(() => {
+                    nextQuestion();
+                    document.getElementById('option-1').style.pointerEvents = 'auto';
+                    document.getElementById('option-2').style.pointerEvents = 'auto';
+                }, 500);
+            } else {
+                document.getElementById('result').innerText = 'Incorrect!';
+                endGame();
+            }
+
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('score').innerText = `Score: ${currentScore}`;
+            currentQuestion++;
+        }, 1000);
+    }, 1500);
+
 
     // document.getElementById('next-question').style.display = 'block';
 }
@@ -1940,6 +2061,14 @@ function checkAnswer(selectedSong, otherSong) {
 // End the game
 function endGame() {
     gameInProgress = false;
+    document.getElementById('song-1-img').style = "display:none;";
+    document.getElementById('song-1-name').innerText = "";
+    document.getElementById('song-1-preview').style = "display:none;";
+    document.getElementById('song-1-streams').innerText = "";
+    document.getElementById('song-2-img').style = "display:none;";
+    document.getElementById('song-2-name').innerText = "";
+    document.getElementById('song-2-preview').style = "display:none;";
+    document.getElementById('song-2-streams').innerText = "";
     document.getElementById('higher-or-lower-game-screen').style.display = 'none';
     document.getElementById('game-over-screen').style.display = 'block';
     document.getElementById('final-score').innerText = currentScore;
@@ -1952,12 +2081,44 @@ function restartGame() {
 }
 
 // Get a random song from the data
-function getRandomSong() {
+async function getRandomSong() {
     if (songsData.length == 0) {
         endGame();
     }
     const randomIndex = Math.floor(Math.random() * songsData.length);
-    return songsData[randomIndex];
+    const trackData = await fetchTrackDataForHigherLower(songsData[randomIndex].trackId);
+    return {
+                streams: songsData[randomIndex].streams,
+                name: trackData.songName,
+                artist: trackData.artistName,
+                albumImage: trackData.albumImage,
+                preview: trackData.preview,
+                trackId: songsData[randomIndex].trackId
+            };
+}
+
+async function fetchTrackDataForHigherLower(trackId) {
+    if (trackArtistNameLookup[trackId]) {
+        return trackArtistNameLookup[trackId];
+    }
+
+    const response = await safeFetch(`https://api.stats.fm/api/v1/tracks/${trackId}`);
+    if (response.status === 503) {
+        alert('Server returned a 503 error. Refresh, wait a minute, and try again lol.');
+        return null;
+    }
+    const data = await response.json();
+
+    const trackData = {
+        songName: data.item.name,
+        artistName: data.item.artists[0]?.name || `Artist ${trackId}`,
+        albumImage: data.item.albums[0]?.image || '',
+        preview: data.item.spotifyPreview || data.item.appleMusicPreview || ''
+    };
+
+
+    trackArtistNameLookup[trackId] = trackData;
+    return trackData;
 }
 
 async function calculateStatsForHigherLower(startTime, endTime) {
@@ -1970,18 +2131,6 @@ async function calculateStatsForHigherLower(startTime, endTime) {
 
     const topItems = await calculateTopItemsForHigherLower(filteredSongs);
 
-    console.log(topItems);
-
-    // Fetch artist names for top 10 songs
-    // const top10SongsWithArtists = await Promise.all(top10Songs.map(async song => {
-    //     const trackData = await fetchTrackData(song.id);
-    //     return {
-    //         ...song,
-    //         artist: trackData.artistName,
-    //         albumImage: trackData.albumImage,
-    //         preview: trackData.preview
-    //     };
-    // }));
     hideLoadingScreen();
     return topItems;
 }
@@ -2017,20 +2166,22 @@ async function calculateTopItemsForHigherLower(songs) {
     });
 
     if (higherOrLowerCategory === 'songs') {
-        return Object.entries(trackCount).sort((a, b) => b[1] - a[1]);
-    }
-    else if (higherOrLowerCategory === 'albums') {
-        return Object.entries(albumCount).sort((a, b) => b[1] - a[1]);
-    }
-    else {
-        return Object.entries(artistCount).sort((a, b) => b[1] - a[1]);
+        return Object.entries(trackCount)
+            .filter(([_, count]) => count > 1)
+            .sort((a, b) => b[1] - a[1]);
+    } else if (higherOrLowerCategory === 'albums') {
+        return Object.entries(albumCount)
+            .filter(([_, count]) => count > 1)
+            .sort((a, b) => b[1] - a[1]);
+    } else {
+        return Object.entries(artistCount)
+            .filter(([_, count]) => count > 1)
+            .sort((a, b) => b[1] - a[1]);
     }
 
 }
 
-// add all time real song data
-// integrate time period selector
+// clickable music
 // add artists and albums
 // add which one did you listen to first? instead of just streams
-// add pictures and music
 // if restart, keep the same data, don't call api again
