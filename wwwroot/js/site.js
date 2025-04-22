@@ -1724,6 +1724,7 @@ let currentQuestion = 0;
 let songsData = [];
 let gameInProgress = false;
 let songSelected;
+let higherOrLowerCategory;
 
 const mockData = [
     { trackId: 1, trackName: "Song A", artistName: "Artist 1", streams: 5000000 },
@@ -1743,6 +1744,7 @@ const mockData = [
 async function startHigherOrLower() {
     gameInProgress = true;
     
+    higherOrLowerCategorycategory = document.getElementById('higher-or-lower-category').value;
     const timespan = document.getElementById('higher-or-lower-timespan').value;
     let endTime = timespan === 'custom' ? new Date(document.getElementById('higher-or-lower-custom-end').value).getTime() : Date.now();
     let startTime;
@@ -1832,7 +1834,7 @@ async function startHigherOrLower() {
         document.getElementById('higher-or-lower-time-range').innerText = "Your All Time Spotify History";
     }
 
-    const topSongs = await calculateStatsForHigherLower(startTime, endTime);
+    const topItems = await calculateStatsForHigherLower(startTime, endTime);
     currentScore = 0;
     currentQuestion = 0;
 
@@ -1842,12 +1844,13 @@ async function startHigherOrLower() {
     document.getElementById('score').innerText = `Score: ${currentScore}`;
 
     // Fetch data from API or local storage
-    songsData = mockData.map(song => ({
-        trackId: song.trackId,
-        name: song.trackName,
-        artist: song.artistName,
-        streams: song.streams
-    }));
+    if (higherOrLowerCategory === 'songs') {
+        songsData = topItems.map(song => ({
+            trackId: song[0],
+            streams: song[1]
+            // add artist name, image, and sample for songs
+        }));
+    }
 
     firstQuestion();
 }
@@ -1965,13 +1968,9 @@ async function calculateStatsForHigherLower(startTime, endTime) {
         return songEndTime >= startTime && songEndTime <= endTime;
     });
 
-    console.log(filteredSongs);
+    const topItems = await calculateTopItemsForHigherLower(filteredSongs);
 
-    const topSongs = Object.entries(filteredSongs)
-        .map(([id, info]) => ({ id, ...info }))
-        .sort((a, b) => b.count - a.count);
-
-    console.log(topSongs);
+    console.log(topItems);
 
     // Fetch artist names for top 10 songs
     // const top10SongsWithArtists = await Promise.all(top10Songs.map(async song => {
@@ -1984,7 +1983,49 @@ async function calculateStatsForHigherLower(startTime, endTime) {
     //     };
     // }));
     hideLoadingScreen();
-    return topSongs;
+    return topItems;
+}
+
+async function calculateTopItemsForHigherLower(songs) {
+    const trackCount = {};
+    const albumCount = {};
+    const artistCount = {};
+
+    songs.forEach(song => {
+        const trackId = song.trackId;
+        const albumId = song.albumId;
+        const artistIds = song.artistIds;
+
+        if (higherOrLowerCategory === 'songs') {
+            if (!trackCount[trackId]) {
+                trackCount[trackId] = 0;
+            }
+            trackCount[trackId]++;
+        }
+
+        if (higherOrLowerCategory === 'albums') {
+            if (!albumCount[albumId]) albumCount[albumId] = 0;
+            albumCount[albumId]++;
+        }
+
+        if (higherOrLowerCategory === 'artists') {
+            artistIds.forEach(artistId => {
+                if (!artistCount[artistId]) artistCount[artistId] = 0;
+                artistCount[artistId]++;
+            });
+        }
+    });
+
+    if (higherOrLowerCategory === 'songs') {
+        return Object.entries(trackCount).sort((a, b) => b[1] - a[1]);
+    }
+    else if (higherOrLowerCategory === 'albums') {
+        return Object.entries(albumCount).sort((a, b) => b[1] - a[1]);
+    }
+    else {
+        return Object.entries(artistCount).sort((a, b) => b[1] - a[1]);
+    }
+
 }
 
 // add all time real song data
@@ -1992,3 +2033,4 @@ async function calculateStatsForHigherLower(startTime, endTime) {
 // add artists and albums
 // add which one did you listen to first? instead of just streams
 // add pictures and music
+// if restart, keep the same data, don't call api again
