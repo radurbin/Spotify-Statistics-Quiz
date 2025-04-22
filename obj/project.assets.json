@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/rileydurbin/Projects/Earnhardtify/Earnhardtify.csproj",
+      "projectUniqueName": "/Users/rileydurbin/Spotify-Statistics-Quiz/Earnhardtify.csproj",
       "projectName": "Earnhardtify",
-      "projectPath": "/Users/rileydurbin/Projects/Earnhardtify/Earnhardtify.csproj",
+      "projectPath": "/Users/rileydurbin/Spotify-Statistics-Quiz/Earnhardtify.csproj",
       "packagesPath": "/Users/rileydurbin/.nuget/packages/",
-      "outputPath": "/Users/rileydurbin/Projects/Earnhardtify/obj/",
+      "outputPath": "/Users/rileydurbin/Spotify-Statistics-Quiz/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/rileydurbin/.nuget/NuGet/NuGet.Config"
