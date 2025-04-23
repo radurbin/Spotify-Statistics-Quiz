@@ -1745,6 +1745,19 @@ async function startHigherOrLower() {
     
     higherOrLowerCategory = document.getElementById('higher-or-lower-category').value;
     higherOrLowerType = document.getElementById('higher-or-lower-type').value;
+    let cat = "song";
+    if (higherOrLowerCategory === 'albums') {
+        cat = "album";
+    }
+    else if (higherOrLowerCategory === 'artists') {
+        cat = "artist";
+    }
+    if (higherOrLowerType === 'streams') {
+        document.getElementById('question-part-1').innerText = `Which ${cat} has more streams`;
+    }
+    else {
+        document.getElementById('question-part-1').innerText = `Which ${cat} was streamed first`;
+    }
     const timespan = document.getElementById('higher-or-lower-timespan').value;
     let endTime = timespan === 'custom' ? new Date(document.getElementById('higher-or-lower-custom-end').value).getTime() : Date.now();
     let startTime;
